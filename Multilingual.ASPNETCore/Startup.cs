@@ -28,10 +28,10 @@ namespace Multilingual.ASPNETCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-services.AddLocalization(options => options.ResourcesPath = "Resources");
-services.AddMvc()
-    .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
-    .AddDataAnnotationsLocalization();
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.AddMvc()
+                .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -59,10 +59,11 @@ services.AddMvc()
             app.UseStaticFiles();
 
             var cultures = new List<CultureInfo> {
-                new CultureInfo("en"),
-                new CultureInfo("fr")
-            };
-            app.UseRequestLocalization(options => {
+    new CultureInfo("en"),
+    new CultureInfo("fr")
+};
+            app.UseRequestLocalization(options =>
+            {
                 options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en");
                 options.SupportedCultures = cultures;
                 options.SupportedUICultures = cultures;
