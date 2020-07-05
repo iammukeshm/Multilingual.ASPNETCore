@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
+using Microsoft.Extensions.Options;
 
 namespace Multilingual.ASPNETCore
 {
@@ -32,6 +33,17 @@ namespace Multilingual.ASPNETCore
             services.AddMvc()
                 .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var cultures = new List<CultureInfo> {
+        new CultureInfo("en"),
+        new CultureInfo("fr")
+                };
+                options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en");
+                options.SupportedCultures = cultures;
+                options.SupportedUICultures = cultures;
+            });
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -58,16 +70,17 @@ namespace Multilingual.ASPNETCore
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            var cultures = new List<CultureInfo> {
-    new CultureInfo("en"),
-    new CultureInfo("fr")
-};
-            app.UseRequestLocalization(options =>
-            {
-                options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en");
-                options.SupportedCultures = cultures;
-                options.SupportedUICultures = cultures;
-            });
+            //var cultures = new List<CultureInfo> {
+            //    new CultureInfo("en"),
+            //    new CultureInfo("fr")
+            //};
+            //app.UseRequestLocalization(options =>
+            //{
+            //    options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en");
+            //    options.SupportedCultures = cultures;
+            //    options.SupportedUICultures = cultures;
+            //});
+            app.UseRequestLocalization(app.ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
             app.UseRouting();
 
